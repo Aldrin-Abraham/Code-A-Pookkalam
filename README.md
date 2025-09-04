@@ -36,7 +36,7 @@ This project generates a vibrant digital Pookkalam (floral design) for Onam usin
 * The design is responsive since it scales using viewBox and vmin units.
 
 # Screenshots 
-<img width="1919" height="867" alt="Pookkalam" src="https://github.com/user-attachments/assets/c2d8ccce-d39e-4e96-a9b1-7f263a84f68c" />
+<img width="1919" height="868" alt="Pookkalam" src="https://github.com/user-attachments/assets/40dbb769-1981-480a-ab6c-6214da17ad7b" />
 Shows the full digital Pookkalam floral design with text “Code a Pookkalam” on top and credit at the bottom.
 
 ### Got Anything to share?
