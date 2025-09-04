@@ -70,8 +70,8 @@
     <span class="malayalam"> എ പൂ</span><span class="english">kka</span><span class="malayalam">ളം</span>
   </div>
 
-  <!-- Pookalam -->
-  <svg id="pookalam" viewBox="-300 -300 600 600" aria-label="Onam Pookalam"></svg>
+  <!-- Pookkalam -->
+  <svg id="pookkalam" viewBox="-300 -300 600 600" aria-label="Onam Pookkalam"></svg>
 
   <!-- Footer -->
   <div class="footer">
@@ -114,9 +114,10 @@
   const petalBack = "#a32323", petalFront = "#d45838";
   const innerPetal = "#c55a63", coreLight  = "#f3dca5";
   const orange = "#e0702e", cream = "#f6e6c8";
+  const yellow = "#f9d64a", darkOrange = "#c45a1f";
 
   //build
-  const svg = document.getElementById("pookalam");
+  const svg = document.getElementById("pookkalam");
 
   svg.appendChild(S("circle",{ r:R, fill:gold }));
   svg.appendChild(S("circle",{ r:rBandOuter, fill:green }));
@@ -142,16 +143,74 @@
   svg.appendChild(S("circle",{ r:rInnerRingInner, fill:orange }));
   svg.appendChild(S("circle",{ r:rCore, fill:coreLight }));
 
-  const M = 8, step = TAU / M, tilt = step/2;
+  const M = 12;
+  const step = TAU / M;
+  const tilt = step/2;
+  
   for (let k=0;k<M;k++){
-    const a = k*step + tilt, a0 = a - step/2, a1 = a + step/2;
+    const a = k*step + tilt;
+    
+    const outerTriSize = 15;
+    const outerR = rCore + 10;
+    const a1 = a - step/4;
+    const a2 = a + step/4;
+    
+    const ox1 = outerR * Math.cos(a1), oy1 = outerR * Math.sin(a1);
+    const ox2 = (outerR + outerTriSize) * Math.cos(a), oy2 = (outerR + outerTriSize) * Math.sin(a);
+    const ox3 = outerR * Math.cos(a2), oy3 = outerR * Math.sin(a2);
+    
+    const outerTri = S("path",{ 
+      d: `M ${ox1} ${oy1} L ${ox2} ${oy2} L ${ox3} ${oy3} Z`, 
+      fill: (k%2===0)? darkOrange : yellow
+    });
+    svg.appendChild(outerTri);
+    
+    const a0 = a - step/2;
+    const a3 = a + step/2;
     const x0 = rPinwheel*Math.cos(a0), y0 = rPinwheel*Math.sin(a0);
-    const x1 = rPinwheel*Math.cos(a1), y1 = rPinwheel*Math.sin(a1);
-    const tri = S("path",{ d:`M 0 0 L ${x0} ${y0} L ${x1} ${y1} Z`, fill: (k%2===0)? orange : cream });
+    const x1 = rPinwheel*Math.cos(a3), y1 = rPinwheel*Math.sin(a3);
+    
+    const tri = S("path",{ 
+      d:`M 0 0 L ${x0} ${y0} L ${x1} ${y1} Z`, 
+      fill: (k%3===0)? orange : (k%3===1)? cream : yellow
+    });
     svg.appendChild(tri);
+    
+    const innerR = rPinwheel - 20;
+    const innerSize = 8;
+    const ia1 = a - step/6;
+    const ia2 = a + step/6;
+    
+    const ix1 = innerR * Math.cos(ia1), iy1 = innerR * Math.sin(ia1);
+    const ix2 = (innerR + innerSize) * Math.cos(a), iy2 = (innerR + innerSize) * Math.sin(a);
+    const ix3 = innerR * Math.cos(ia2), iy3 = innerR * Math.sin(ia2);
+    
+    const innerTri = S("path",{ 
+      d: `M ${ix1} ${iy1} L ${ix2} ${iy2} L ${ix3} ${iy3} Z`, 
+      fill: (k%2===0)? cream : darkOrange
+    });
+    svg.appendChild(innerTri);
   }
 
-  svg.appendChild(S("circle",{ r:16, fill:coreLight }));
+  svg.appendChild(S("circle",{ r:20, fill:cream }));
+  svg.appendChild(S("circle",{ r:16, fill:yellow }));
+  svg.appendChild(S("circle",{ r:8, fill:orange }));
+  
+  for (let i = 0; i < 8; i++) {
+    const angle = i * (TAU / 8);
+    const r = 30;
+    const x = r * Math.cos(angle);
+    const y = r * Math.sin(angle);
+    
+    const dot = S("circle", {
+      cx: x,
+      cy: y,
+      r: 3,
+      fill: cream
+    });
+    svg.appendChild(dot);
+  }
+
   svg.appendChild(S("circle",{ r:rRim, fill:"none", stroke:gold, "stroke-width":8 }));
   </script>
 </body>
