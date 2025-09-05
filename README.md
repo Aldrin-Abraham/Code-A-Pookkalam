@@ -38,8 +38,7 @@ It blends Kerala’s traditional Onam art with modern web technologies, producin
 * The design is responsive, scaling with viewBox and vmin units.
 
 # Screenshots 
-
-<img width="1919" height="865" alt="Pookkalam" src="https://github.com/user-attachments/assets/e00aee2f-69f0-45b4-ae53-ff351496386a" />
+<img width="1919" height="868" alt="Pookkalam" src="https://github.com/user-attachments/assets/1450e20d-4d00-4909-8ea5-3f9e3d6b3ccf" />
 Shows the full digital Pookkalam floral design with text “Code a Pookkalam” on top and credit at the bottom.
 
 ---
