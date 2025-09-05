@@ -126,9 +126,6 @@
   const orange = "#e0702e", cream = "#f6e6c8";
   const yellow = "#f9d64a", darkOrange = "#c45a1f";
   const deepRed = "#8a0f24";
-  const green = "#2e8b57", darkGreen = "#226b31";
-  const lightYellow = "#ffdd66", darkYellow = "#e2b23a";
-  const purple = "#8a2be2", lightPurple = "#9370db";
 
   //build
   const svg = document.getElementById("pookkalam");
@@ -136,71 +133,46 @@
   // Create base layers first
   svg.appendChild(S("circle",{ r:R, fill:gold }));
 
-  // NEW: Create gradients for the additional outer layer
-  const purpleGradient = S("radialGradient", { id: "purpleGradient", cx: "50%", cy: "50%", r: "50%", fx: "50%", fy: "50%" });
-  purpleGradient.appendChild(S("stop", { offset: "0%", "stop-color": purple }));
-  purpleGradient.appendChild(S("stop", { offset: "100%", "stop-color": lightPurple }));
-  svg.appendChild(purpleGradient);
-
-  const whiteGradient = S("radialGradient", { id: "whiteGradient", cx: "50%", cy: "50%", r: "50%", fx: "50%", fy: "50%" });
-  whiteGradient.appendChild(S("stop", { offset: "0%", "stop-color": "#ffffff" }));
-  whiteGradient.appendChild(S("stop", { offset: "100%", "stop-color": cream }));
-  svg.appendChild(whiteGradient);
+  // Outer petals colors
+  const outerPetalColor1 = "#013220"; // Deep Leaf Green
+  const outerPetalColor2 = "#800000"; // Maroon
+  const outerPetalColor3 = "#ff7518"; // Festive Orange
+  const outerPetalColor4 = "#f3cba5"; // Skin-Toned Cream
 
   const outerPetals = 24;
   const outerSector = TAU / outerPetals;
   
+  // Create first layer of original outer alternating petals (4-color pattern)
   for (let i = 0; i < outerPetals; i++) {
     const a0 = i * outerSector;
     const a1 = (i + 1) * outerSector;
     
-    // Outer petals with alternating colors
-    const outerPetal = S("path", { 
-      d: annularSectorPath(0, 0, rOuterPetalInner4, rOuterPetalOuter4, a0, a1), 
-      fill: i % 2 === 0 ? "url(#purpleGradient)" : "url(#whiteGradient)" 
-    });
-    svg.appendChild(outerPetal);
+    // Determine color based on position in 4-color sequence
+    let color;
+    let strokeColor;
+    switch((i+1) % 4) {
+      case 0:
+        color = outerPetalColor1;
+        strokeColor = "#011a10"; // Darker deep green
+        break;
+      case 1:
+        color = outerPetalColor2;
+        strokeColor = "#660000"; // Darker maroon
+        break;
+      case 2:
+        color = outerPetalColor3;
+        strokeColor = "#cc5500"; // Darker orange
+        break;
+      case 3:
+        color = outerPetalColor4;
+        strokeColor = "#d9b89a"; // Slightly darker cream
+        break;
+    }
     
-    // Decorative lines on outer petals
-    const midAngle = (a0 + a1) / 2;
-    const lineStartX = (rOuterPetalInner4 + 10) * Math.cos(midAngle);
-    const lineStartY = (rOuterPetalInner4 + 10) * Math.sin(midAngle);
-    const lineEndX = (rOuterPetalOuter4 - 10) * Math.cos(midAngle);
-    const lineEndY = (rOuterPetalOuter4 - 10) * Math.sin(midAngle);
-    
-    const petalLine = S("line", {
-      x1: lineStartX, y1: lineStartY,
-      x2: lineEndX, y2: lineEndY,
-      stroke: i % 2 === 0 ? purple : cream,
-      "stroke-width": 2,
-      opacity: 0.6
-    });
-    svg.appendChild(petalLine);
-  }
-
-  // Add a gold rim around outer layer
-  svg.appendChild(S("circle",{ r:rOuterPetalOuter4, fill:"none", stroke:gold, "stroke-width":4 }));
-
-  // Create gradients for alternating colors in original outer petals
-  const greenGradient = S("radialGradient", { id: "greenGradient", cx: "50%", cy: "50%", r: "50%", fx: "50%", fy: "50%" });
-  greenGradient.appendChild(S("stop", { offset: "0%", "stop-color": green }));
-  greenGradient.appendChild(S("stop", { offset: "100%", "stop-color": darkGreen }));
-  svg.appendChild(greenGradient);
-
-  const yellowGradient = S("radialGradient", { id: "yellowGradient", cx: "50%", cy: "50%", r: "50%", fx: "50%", fy: "50%" });
-  yellowGradient.appendChild(S("stop", { offset: "0%", "stop-color": lightYellow }));
-  yellowGradient.appendChild(S("stop", { offset: "100%", "stop-color": darkYellow }));
-  svg.appendChild(yellowGradient);
-
-  // Create first layer of outer alternating petals (green and yellow)
-  for (let i = 0; i < outerPetals; i++) {
-    const a0 = i * outerSector;
-    const a1 = (i + 1) * outerSector;
-    
-    // Outer petals with alternating colors
+    // Outer petals with 4-color alternating pattern (solid colors)
     const outerPetal = S("path", { 
       d: annularSectorPath(0, 0, rOuterPetalInner1, rOuterPetalOuter1, a0, a1), 
-      fill: i % 2 === 0 ? "url(#greenGradient)" : "url(#yellowGradient)" 
+      fill: color 
     });
     svg.appendChild(outerPetal);
     
@@ -214,22 +186,44 @@
     const petalLine = S("line", {
       x1: lineStartX, y1: lineStartY,
       x2: lineEndX, y2: lineEndY,
-      stroke: i % 2 === 0 ? darkGreen : darkYellow,
+      stroke: strokeColor,
       "stroke-width": 2,
       opacity: 0.6
     });
     svg.appendChild(petalLine);
   }
 
-  // Create second layer of outer alternating petals
+  // Create second layer of outer alternating petals (shift the pattern by 2 positions)
   for (let i = 0; i < outerPetals; i++) {
     const a0 = i * outerSector;
     const a1 = (i + 1) * outerSector;
     
-    // Outer petals with alternating colors
+    // Determine color based on position in 4-color sequence (shifted by 2)
+    let color;
+    let strokeColor;
+    switch((i + 2) % 4) {
+      case 0:
+        color = outerPetalColor1;
+        strokeColor = "#011a10"; // Darker deep green
+        break;
+      case 1:
+        color = outerPetalColor2;
+        strokeColor = "#660000"; // Darker maroon
+        break;
+      case 2:
+        color = outerPetalColor3;
+        strokeColor = "#cc5500"; // Darker orange
+        break;
+      case 3:
+        color = outerPetalColor4;
+        strokeColor = "#d9b89a"; // Slightly darker cream
+        break;
+    }
+    
+    // Outer petals with 4-color alternating pattern (solid colors)
     const outerPetal = S("path", { 
       d: annularSectorPath(0, 0, rOuterPetalInner2, rOuterPetalOuter2, a0, a1), 
-      fill: i % 2 === 0 ? "url(#yellowGradient)" : "url(#greenGradient)" 
+      fill: color 
     });
     svg.appendChild(outerPetal);
     
@@ -243,22 +237,44 @@
     const petalLine = S("line", {
       x1: lineStartX, y1: lineStartY,
       x2: lineEndX, y2: lineEndY,
-      stroke: i % 2 === 0 ? darkYellow : darkGreen,
+      stroke: strokeColor,
       "stroke-width": 2,
       opacity: 0.6
     });
     svg.appendChild(petalLine);
   }
 
-  // Create third layer of outer alternating petals
+  // Create third layer of outer alternating petals (shift the pattern by 1 position)
   for (let i = 0; i < outerPetals; i++) {
     const a0 = i * outerSector;
     const a1 = (i + 1) * outerSector;
     
-    // Outer petals with alternating colors
+    // Determine color based on position in 4-color sequence
+    let color;
+    let strokeColor;
+    switch((i + 3) % 4) {
+      case 0:
+        color = outerPetalColor1;
+        strokeColor = "#011a10"; // Darker deep green
+        break;
+      case 1:
+        color = outerPetalColor2;
+        strokeColor = "#660000"; // Darker maroon
+        break;
+      case 2:
+        color = outerPetalColor3;
+        strokeColor = "#cc5500"; // Darker orange
+        break;
+      case 3:
+        color = outerPetalColor4;
+        strokeColor = "#d9b89a"; // Slightly darker cream
+        break;
+    }
+    
+    // Outer petals with 4-color alternating pattern (solid colors)
     const outerPetal = S("path", { 
       d: annularSectorPath(0, 0, rOuterPetalInner3, rOuterPetalOuter3, a0, a1), 
-      fill: i % 2 === 0 ? "url(#greenGradient)" : "url(#yellowGradient)" 
+      fill: color 
     });
     svg.appendChild(outerPetal);
     
@@ -272,40 +288,26 @@
     const petalLine = S("line", {
       x1: lineStartX, y1: lineStartY,
       x2: lineEndX, y2: lineEndY,
-      stroke: i % 2 === 0 ? darkGreen : darkYellow,
+      stroke: strokeColor,
       "stroke-width": 2,
       opacity: 0.6
     });
     svg.appendChild(petalLine);
   }
 
-  // Continue with the original gold band
-  svg.appendChild(S("circle",{ r:rOuterPetalInner3, fill:gold }));
-
-  // Original petal gradients
-  const petalBackGradient = S("radialGradient", { id: "petalBackGradient", cx: "50%", cy: "50%", r: "50%", fx: "50%", fy: "50%" });
-  petalBackGradient.appendChild(S("stop", { offset: "0%", "stop-color": petalBack }));
-  petalBackGradient.appendChild(S("stop", { offset: "100%", "stop-color": deepRed }));
-  svg.appendChild(petalBackGradient);
-
-  const petalFrontGradient = S("radialGradient", { id: "petalFrontGradient", cx: "50%", cy: "50%", r: "50%", fx: "50%", fy: "50%" });
-  petalFrontGradient.appendChild(S("stop", { offset: "0%", "stop-color": petalFront }));
-  petalFrontGradient.appendChild(S("stop", { offset: "100%", "stop-color": "#b34a2c" }));
-  svg.appendChild(petalFrontGradient);
-
-  const N = 16, sector = TAU / N;
-  
   // Create a group for all petals to manage z-index more easily
   const petalsGroup = S("g");
   
   // Create all original petals
+  const N = 16, sector = TAU / N;
+  
   for (let i = 0; i < N - 1; i++) {
     const a0 = i * sector, a1 = (i + 1) * sector;
 
-    // Back petals with gradient
+    // Back petals with solid color
     const pBack = S("path", { 
       d: annularSectorPath(0, 0, rPetalInnerBack, rPetalOuterBack, a0 + 0.02, a1 - 0.02), 
-      fill: "url(#petalBackGradient)" 
+      fill: petalBack 
     });
     petalsGroup.appendChild(pBack);
 
@@ -328,10 +330,10 @@
     const offset = sector / 2;
     const q0 = a0 + offset + 0.02, q1 = a1 + offset - 0.02;
     
-    // Front petals with gradient
+    // Front petals with solid color
     const pFront = S("path", { 
       d: annularSectorPath(0, 0, rPetalInnerFront, rPetalOuterFront, q0, q1), 
-      fill: "url(#petalFrontGradient)" 
+      fill: petalFront 
     });
     petalsGroup.appendChild(pFront);
 
@@ -355,7 +357,7 @@
     petalsGroup.appendChild(inner);
   }
 
-  // Now handle the last petal (i = N-1) with special treatment
+  // Handle the last petal (i = N-1) with special treatment
   const lastIndex = N - 1;
   const a0 = lastIndex * sector;
   const a1 = (lastIndex + 1) * sector;
@@ -364,14 +366,14 @@
   // First half of the last back petal (follows the pattern)
   const pBackFirstHalf = S("path", { 
     d: annularSectorPath(0, 0, rPetalInnerBack, rPetalOuterBack, a0 + 0.02, midAngle), 
-    fill: "url(#petalBackGradient)" 
+    fill: petalBack 
     });
   petalsGroup.appendChild(pBackFirstHalf);
   
   // Second half of the last back petal (goes underneath but stays within petal layer)
   const pBackSecondHalf = S("path", { 
     d: annularSectorPath(0, 0, rPetalInnerBack, rPetalOuterBack, midAngle, a1 - 0.02), 
-    fill: "url(#petalBackGradient)"
+    fill: petalBack
   });
   // Add to the beginning of the petals group to ensure it's behind other petals
   petalsGroup.insertBefore(pBackSecondHalf, petalsGroup.firstChild);
@@ -384,7 +386,7 @@
   // First half of the last front petal
   const pFrontFirstHalf = S("path", { 
     d: annularSectorPath(0, 0, rPetalInnerFront, rPetalOuterFront, q0, frontMidAngle), 
-    fill: "url(#petalFrontGradient)" 
+    fill: petalFront 
   });
   petalsGroup.appendChild(pFrontFirstHalf);
   
@@ -394,7 +396,7 @@
   // Second half of the last front petal (goes underneath)
   const pFrontSecondHalf = S("path", { 
     d: annularSectorPath(0, 0, rPetalInnerFront, rPetalOuterFront, frontMidAngle, q1), 
-    fill: "url(#petalFrontGradient)"
+    fill: petalFront
   });
   lastPetalSecondHalfGroup.appendChild(pFrontSecondHalf);
 
